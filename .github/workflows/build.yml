@@ -1,0 +1,31 @@
+name: Compilar mod
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extrair projeto
+        run: unzip -o payload.zip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.12.1
+
+      - name: Compilar
+        run: gradle build --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jedy-mod-jar
+          path: build/libs/*.jar
